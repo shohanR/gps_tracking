@@ -8,12 +8,10 @@ var firebaseConfig = {
   appId: "1:883705435651:web:f653819835e7c2f46fe036"
 };
 
-
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 var user = null;
 var map = null;
-var markers = {}; // Store markers for each device
 
 // Function to initialize the map and user authentication
 function initializeMap() {
@@ -27,13 +25,13 @@ function initializeMap() {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
       // Retrieve and display device data
-      retrieveAndDisplayDeviceData(map);
+      retrieveAndDisplayDeviceData();
     }
   });
 }
 
 // Function to retrieve and display device data
-function retrieveAndDisplayDeviceData(map) {
+function retrieveAndDisplayDeviceData() {
   var devicesRef = database.ref(user.uid + '/devices');
   var deviceTableBody = document.getElementById('device-table-body');
 
@@ -43,10 +41,6 @@ function retrieveAndDisplayDeviceData(map) {
     snapshot.forEach(function(childSnapshot) {
       var deviceData = childSnapshot.val();
       var device_id = childSnapshot.key;
-      var vehicle_type = deviceData.vehicle_type;
-      var lat = deviceData.latitude;
-      var lon = deviceData.longitude;
-      var speed = deviceData.speed;
 
       // Add a row to the device table
       var row = deviceTableBody.insertRow();
@@ -57,23 +51,25 @@ function retrieveAndDisplayDeviceData(map) {
       var speedCell = row.insertCell(4);
 
       idCell.textContent = device_id;
-      typeCell.textContent = vehicle_type;
-      latCell.textContent = lat;
-      lonCell.textContent = lon;
-      speedCell.textContent = speed;
+      typeCell.textContent = deviceData.vehicle_type;
+      latCell.textContent = deviceData.latitude;
+      lonCell.textContent = deviceData.longitude;
+      speedCell.textContent = deviceData.speed;
 
       // Add a click event listener to show details and place a marker on the map
       row.addEventListener('click', function() {
-        // Clear existing markers
-        for (var key in markers) {
-          map.removeLayer(markers[key]);
-        }
+        var lat = deviceData.latitude;
+        var lon = deviceData.longitude;
 
-        // Show details in an alert
-        alert("Device ID: " + device_id + "\nVehicle Type: " + vehicle_type + "\nLatitude: " + lat + "\nLongitude: " + lon + "\nSpeed: " + speed);
+        // Remove any existing markers on the map
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+          }
+        });
 
         // Place a marker on the map at the selected device's location
-        markers[device_id] = L.marker([lat, lon]).addTo(map);
+        L.marker([lat, lon]).addTo(map);
       });
     });
   });
@@ -91,5 +87,7 @@ function logout() {
 window.addEventListener('DOMContentLoaded', function() {
   initializeMap();
 });
+
+
 
 
