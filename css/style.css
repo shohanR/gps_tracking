@@ -1,0 +1,33 @@
+html,
+body,
+#map {
+  height: 500px;
+  width: 1200px;
+  margin: 10px;
+  padding: 10px;
+}
+
+#device-list {
+  margin: 10px;
+  padding: 10px;
+}
+
+#device-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#device-table th, #device-table td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+#device-table th {
+  background-color: #f2f2f2;
+}
+
+
+
+
+
