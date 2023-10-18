@@ -71,6 +71,16 @@ function retrieveAndDisplayDeviceData() {
         // Place a marker on the map at the selected device's location
         L.marker([lat, lon], 12).addTo(map);
         map.setView([lat, lon], 12);
+
+        // Highlight the selected row
+        // First, remove any previous highlighting
+        var selectedRow = deviceTableBody.querySelector('.highlighted');
+        if (selectedRow) {
+          selectedRow.classList.remove('highlighted');
+        }
+
+        // Then, highlight the newly selected row
+        row.classList.add('highlighted');
       });
     });
   });
