@@ -8,10 +8,12 @@ var firebaseConfig = {
   appId: "1:883705435651:web:f653819835e7c2f46fe036"
 };
 
+
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 var user = null;
 var map = null;
+var markers = {}; // Store markers for each device
 
 // Function to initialize the map and user authentication
 function initializeMap() {
@@ -46,8 +48,6 @@ function retrieveAndDisplayDeviceData(map) {
       var lon = deviceData.longitude;
       var speed = deviceData.speed;
 
-      L.marker([lat, lon]).addTo(map).bindPopup("Device ID: " + device_id); // Show a popup with device_id on marker click
-
       // Add a row to the device table
       var row = deviceTableBody.insertRow();
       var idCell = row.insertCell(0);
@@ -64,10 +64,16 @@ function retrieveAndDisplayDeviceData(map) {
 
       // Add a click event listener to show details and place a marker on the map
       row.addEventListener('click', function() {
+        // Clear existing markers
+        for (var key in markers) {
+          map.removeLayer(markers[key]);
+        }
+
         // Show details in an alert
         alert("Device ID: " + device_id + "\nVehicle Type: " + vehicle_type + "\nLatitude: " + lat + "\nLongitude: " + lon + "\nSpeed: " + speed);
+
         // Place a marker on the map at the selected device's location
-        L.marker([lat, lon]).addTo(map);
+        markers[device_id] = L.marker([lat, lon]).addTo(map);
       });
     });
   });
@@ -85,4 +91,5 @@ function logout() {
 window.addEventListener('DOMContentLoaded', function() {
   initializeMap();
 });
+
 
