@@ -34,11 +34,12 @@ function initializeMap() {
 function retrieveAndDisplayDeviceData() {
   var devicesRef = database.ref(user.uid + '/devices');
   var deviceTableBody = document.getElementById('device-table-body');
+  var selectedDeviceId = localStorage.getItem('selectedDeviceId');
 
-  devicesRef.on('value', function(snapshot) {
+  devicesRef.on('value', function (snapshot) {
     deviceTableBody.innerHTML = ''; // Clear existing table rows
 
-    snapshot.forEach(function(childSnapshot) {
+    snapshot.forEach(function (childSnapshot) {
       var deviceData = childSnapshot.val();
       var device_id = childSnapshot.key;
 
@@ -56,37 +57,49 @@ function retrieveAndDisplayDeviceData() {
       lonCell.textContent = deviceData.longitude;
       speedCell.textContent = deviceData.speed;
 
-      // Add a click event listener to show details and place a marker on the map
-      row.addEventListener('click', function() {
-        var lat = deviceData.latitude;
-        var lon = deviceData.longitude;
+      if (device_id === selectedDeviceId) {
+        row.classList.add('highlighted');
+        updateMapMarker(deviceData.latitude, deviceData.longitude);
+      }
 
-        // Remove any existing markers on the map
-        map.eachLayer(function(layer) {
-          if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-          }
-        });
+      // Add a click event listener to select a device
+      row.addEventListener('click', function () {
+        // Set the selected device ID in local storage
+        localStorage.setItem('selectedDeviceId', device_id);
 
-        // Place a marker on the map at the selected device's location
-        L.marker([lat, lon], 12).addTo(map);
-        map.setView([lat, lon], 12);
-
-        // Highlight the selected row
-        // First, remove any previous highlighting
-        var selectedRow = deviceTableBody.querySelector('.highlighted');
-        if (selectedRow) {
-          selectedRow.classList.remove('highlighted');
+        // Remove highlighting from other rows
+        var rows = deviceTableBody.getElementsByTagName('tr');
+        for (var i = 0; i < rows.length; i++) {
+          rows[i].classList.remove('highlighted');
         }
 
-        // Then, highlight the newly selected row
+        // Highlight the selected row
         row.classList.add('highlighted');
+
+        // Update the map marker
+        updateMapMarker(deviceData.latitude, deviceData.longitude);
       });
     });
   });
 }
 
+function updateMapMarker(lat, lon) {
+  // Remove any existing markers on the map
+  map.eachLayer(function (layer) {
+    if (layer instanceof L.Marker) {
+      map.removeLayer(layer);
+    }
+  });
+
+  // Place a marker on the map at the selected device's location
+  L.marker([lat, lon]).addTo(map);
+  map.setView([lat, lon], 18);
+}
+
 function logout() {
+  // Clear the selected device ID from local storage on logout
+  localStorage.removeItem('selectedDeviceId');
+
   firebase.auth().signOut().then(function() {
     window.location.replace("login.html");
   }).catch(function(error) {
@@ -97,6 +110,9 @@ function logout() {
 // Ensure the DOM is ready before initializing the map
 window.addEventListener('DOMContentLoaded', function() {
   initializeMap();
+
+  // Refresh location data every 30 seconds
+  setInterval(retrieveAndDisplayDeviceData, 30000);
 });
 
 
