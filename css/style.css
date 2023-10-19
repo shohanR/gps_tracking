@@ -29,9 +29,10 @@ body,
 
 /* Highlighted row styles */
 .highlighted {
-  background-color: #f5f5f5; /* Background color when selected */
+  background-color: #4227a3; /* Background color when selected */
+  /* display: block; */
   font-weight: bold; /* Make text bold when selected */
-  color: #3e10e4; /* Text color when selected */
+  color: #fdfcff; /* Text color when selected */
   cursor: pointer; /* Change cursor on hover */
 }
 
