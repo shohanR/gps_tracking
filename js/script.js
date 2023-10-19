@@ -93,6 +93,7 @@ function updateMapMarker(lat, lon) {
 
   // Place a marker on the map at the selected device's location
   L.marker([lat, lon]).addTo(map);
+  map.setView([lat, lon], 18);
 }
 
 function logout() {
