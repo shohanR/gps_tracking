@@ -233,3 +233,5 @@ window.addEventListener('DOMContentLoaded', function() {
   // Refresh location data every 30 seconds
   setInterval(retrieveAndDisplayDeviceData, 30000);
 });
+
+
