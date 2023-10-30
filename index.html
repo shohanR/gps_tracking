@@ -13,20 +13,23 @@
     <title>Real-time Tracker</title>
 </head>
 <body>
-    <div id="map"></div>
-    <div id="device-list">
-        <table id="device-table">
-            <thead>
-                <tr>
-                    <th>Device ID</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                    <th>Speed</th>
-                </tr>
-            </thead>
-            <tbody id="device-table-body"></tbody>
-        </table>
+    <div id="map-container">
+        <div id="map" class="map"></div>
+        <div id="device-list" class="device-list">
+            <table id="device-table">
+                <thead>
+                    <tr>
+                        <th>Device ID</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Speed</th>
+                    </tr>
+                </thead>
+                <tbody id="device-table-body"></tbody>
+            </table>
+            <button onclick="logout()" class="logout-button">Logout</button>
+        </div>
     </div>
-    <button onclick="logout()">Logout</button>
+    <!-- <button onclick="logout()">Logout</button> -->
 </body>
 </html>
